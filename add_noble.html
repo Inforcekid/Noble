@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        label{display: inline-block; width: 80px;}
+        input,select{width: 120px;}
+    </style>
+</head>
+<body>
+    <label>Company Name</label><input id="Compname" type="text"><br><br>
+    <label>Director's Name</label><input id="Dirname" type="text"><br><br>
+    <label>Registration Date</label><input id="Regdate" type="date"><br><br>
+    <label>Message</label><textarea id="Message" type="text"></textarea><br><br>
+
+<hr>
+<button id="Insbtn">INSERT</button>
+<button id="Selbtn">SELECT</button>
+<button id="Updbtn">UPDATE</button>
+<button id="Delbtn">DELETE</button>
+
+
+<script type="module">
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.6/firebase-app.js";
+    // TODO: Add SDKs for Firebase products that you want to use
+    // https://firebase.google.com/docs/web/setup#available-libraries
+  
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyB3Uad5w_QKC5EIJwduqCB5pEZLKGy8Jz0",
+      authDomain: "noble-s-project.firebaseapp.com",
+      projectId: "noble-s-project",
+      storageBucket: "noble-s-project.appspot.com",
+      messagingSenderId: "836301131573",
+      appId: "1:836301131573:web:b3ad6c51effb0bcbc4067c"
+    };
+  
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+
+    import {getDatabase, ref, get, set, child, update, remove}
+    from "https://www.gstatic.com/firebasejs/9.6.6/firebase-database.js";
+
+    const db = getDatabase();
+
+//------------------------References----------------------//    
+
+        var compnamebox = document.getElementById("Compname");
+        var dirbox = document.getElementById("Dirname");
+        var datebox = document.getElementById("Regdate");
+        var messagebox = document.getElementById("Message");
+
+        var insBtn = document.getElementById("Insbtn");
+        var selBtn = document.getElementById("Selbtn");
+        // var updBtn = document.getElementById("Updbtn");
+        // var delBtn = document.getElementById("Delbtn");
+
+//-----------Insert Function--------------------------------//
+
+        function InsertData(){
+            set(ref(db, "TheStudents/" + compnamebox.value), {
+                NameOfComp: compnamebox.value,
+                Director: dirbox.value,
+                DateOfReg: datebox.value,
+                MessageExtra: messagebox.value
+            })
+            .then(()=>{
+                alert("Data stored successfully");
+            })
+            .catch((error)=>{
+                alert("unsuccessful, error"+ error);
+            });
+        }
+
+//---------------SELECT DATA FUNCTION------------------------//
+        function SelectData(){
+            const dbref = ref(db);
+
+            get(child(dbref, "TheStudents/")).then((snapshot)=>{
+                if(snapshot.exists()){
+                    compnamebox.value = snapshot.val().NameOfComp;
+                    datebox.value = snapshot.val().DateOfReg;
+                    messagebox.value = snapshot.val().MessageExtra;
+                }
+                else {
+                    alert("No data found");
+                }
+                
+            })
+            .catch((error)=>{
+                alert("unsuccessful, error"+ error);
+            });
+        }
+
+
+//---------UPDATE DATA FUNCTION------------------------------//
+
+        function UpdateData(){
+            update(ref(db, "TheStudents/"), {
+                NameOfComp: compnamebox.value,
+                DateOfReg: datebox.value,
+                MessageExtra: messagebox.value
+            })
+            .then(()=>{
+                alert("Data updated successfully");
+            })
+            .catch((error)=>{
+                alert("unsuccessful, error"+ error);
+            });
+        }
+
+
+//---------DELETE DATA FUNCTION------------------------------//
+
+function DeleteData(){
+            remove(ref(db, "TheStudents/"))
+            .then(()=>{
+                alert("Data removed successfully");
+            })
+            .catch((error)=>{
+                alert("unsuccessful, error"+ error);
+            });
+        }
+
+
+//-------------Assign Events To Btns------------------------//
+        insBtn.addEventListener('click', InsertData);
+        selBtn.addEventListener('click', SelectData);
+        // updBtn.addEventListener('click', UpdateData);
+        // delBtn.addEventListener('click', DeleteData);
+
+
+  </script>
+
+</body>
+</html>
